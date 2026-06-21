@@ -1,31 +1,57 @@
 package com.example.application.views.home;
 
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.Menu;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
-import org.vaadin.lineawesome.LineAwesomeIconUrl;import com.vaadin.flow.component.html.H1;
+import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Menu;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Home")
-@Route("Home")
-@Menu(order = 0, icon = LineAwesomeIconUrl.GLOBE_SOLID)
-public class HomeView extends HorizontalLayout {
-
-    private TextField name;
-    private Button sayHello;
+@Route(value = "", layout = MainLayout.class)
+@Menu(order = 0, icon = LineAwesomeIconUrl.HOME_SOLID)
+public class HomeView extends VerticalLayout {
 
     public HomeView() {
-        setSpacing(false);
-        setAlignItems(Alignment.CENTER);
+        setSpacing(true);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
+        add(getHeader());
+
+
+        Paragraph description = new Paragraph(
+                "Bei TravelBooking können Kunden einfache und moderne Reisen buchen. " +
+                        "Die Anwendung zeigt verschiedene Angebote, Preise und Informationen übersichtlich an. " +
+                        "Mit Vaadin und Spring Boot wird die Webanwendung komplett in Java erstellt."
+        );
+        description.setWidth("500px");
+        description.getStyle()
+                .set("font-size", "22px")
+                .set("line-height", "1.6")
+                .set("text-align", "left");
+
+        HorizontalLayout content = new HorizontalLayout(description);
+        content.setDefaultVerticalComponentAlignment(Alignment.CENTER);
+        content.getStyle().set("gap", "40px");
+        add(content);
+
+        H3 name = new H3("TravelBooking GmbH");
+        H3 street = new H3("Spengergasse 20");
+        H3 city = new H3("1050 Wien");
+
+        HorizontalLayout address = new HorizontalLayout(name, street, city);
+        address.getStyle().set("gap", "40px");
+        add(address);
+    }
+
+    public static Component getHeader() {
         H1 companyName = new H1("TravelBooking");
         companyName.getStyle()
                 .set("font-family", "cursive")
@@ -37,26 +63,11 @@ public class HomeView extends HorizontalLayout {
                 .set("margin", "0")
                 .set("color", "gray");
 
-        Image img = new Image("images/logo.png", "TravelBooking Logo");
-        img.setWidth("220px");
+        VerticalLayout headerLayout = new VerticalLayout(companyName, subName);
+        headerLayout.setSpacing(false);
+        headerLayout.setPadding(false);
+        headerLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        Paragraph description = new Paragraph(
-                "Bei TravelBooking können Kunden einfache und moderne Reisen buchen. " +
-                        "Die Anwendung zeigt verschiedene Angebote, Preise und Informationen " +
-                        "übersichtlich an. Ziel ist es, eine einfache Webanwendung mit Vaadin " +
-                        "und Spring Boot zu erstellen."
-        );
-        description.setWidth("500px");
-        description.getStyle()
-                .set("font-size", "22px")
-                .set("line-height", "1.6")
-                .set("text-align", "left");
-
-        H3 name = new H3("TravelBooking GmbH");
-        H3 street = new H3("Spengergasse 20");
-        H3 city = new H3("1050 Wien");
-
-        add(companyName, subName, img, description, name, street, city);
+        return headerLayout;
     }
-
 }

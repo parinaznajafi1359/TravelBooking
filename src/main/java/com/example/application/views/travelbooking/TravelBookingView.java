@@ -1,62 +1,79 @@
 package com.example.application.views.travelbooking;
 
+import com.example.application.views.MainLayout;
+import com.example.application.views.home.HomeView;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
+import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Paragraph;
+
+import java.util.OptionalDouble;
+
 @PageTitle("TravelBooking")
-@Route("")
+@Route(value = "travelbooking", layout = MainLayout.class)
 @Menu(order = 1, icon = LineAwesomeIconUrl.FILE)
 public class TravelBookingView extends VerticalLayout {
 
     public TravelBookingView() {
         setSpacing(false);
-        setAlignItems(Alignment.CENTER);
+        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 
-        H1 companyName = new H1("TravelBooking");
-        companyName.getStyle()
-                .set("font-family", "cursive")
-                .set("font-size", "6rem")
-                .set("margin", "0");
-
-        H2 subName = new H2("... your travel booking place ...");
-        subName.getStyle()
-                .set("margin", "0")
-                .set("color", "gray");
+        add(HomeView.getHeader());
 
         H2 title = new H2("Reiseangebote");
+        add(title);
 
-        H2 zone1 = new H2("Wien - Italien");
-        Paragraph price1 = new Paragraph("Preis: 199,00 Euro");
-        Paragraph free1 = new Paragraph("Inklusive Hotel und Frühstück");
+        VerticalLayout zone1 = createCard("Wien - Italien", 199.0, OptionalDouble.of(0));
+        VerticalLayout zone2 = createCard("Wien - Paris", 299.0, OptionalDouble.of(0));
+        VerticalLayout zone3 = createCard("Wien - Barcelona", 349.0, OptionalDouble.of(0));
+        VerticalLayout zone4 = createCard("Wien - Dubai", 599.0, OptionalDouble.empty());
 
-        H2 zone2 = new H2("Wien - Paris");
-        Paragraph price2 = new Paragraph("Preis: 299,00 Euro");
-        Paragraph free2 = new Paragraph("Inklusive Flug und Hotel");
+        FlexLayout cardsLayout = new FlexLayout(zone1, zone2, zone3, zone4);
+        cardsLayout.setWidthFull();
+        cardsLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        cardsLayout.setFlexWrap(FlexLayout.FlexWrap.WRAP);
 
-        H2 zone3 = new H2("Wien - Barcelona");
-        Paragraph price3 = new Paragraph("Preis: 349,00 Euro");
-        Paragraph free3 = new Paragraph("Inklusive Flug, Hotel und Stadtführung");
+        add(cardsLayout);
 
-        H2 zone4 = new H2("Wien - Dubai");
-        Paragraph price4 = new Paragraph("Preis: 599,00 Euro");
-        Paragraph free4 = new Paragraph("Luxusreise mit Hotel und Transfer");
-
-        add(
-                companyName, subName, title,
-                zone1, price1, free1,
-                zone2, price2, free2,
-                zone3, price3, free3,
-                zone4, price4, free4
+        Paragraph info = new Paragraph(
+                "Unsere Reiseangebote beinhalten je nach Paket Hotel, Flug, Frühstück oder Transfer. " +
+                        "Die Angebote können später erweitert und mit einer Datenbank verbunden werden."
         );
+        info.setWidth("80%");
+        info.getStyle()
+                .set("text-align", "center")
+                .set("font-size", "20px");
+
+        add(info);
     }
 
+    private VerticalLayout createCard(String destination, double price, OptionalDouble specialOffer) {
+        H2 destinationTitle = new H2(destination);
+        Paragraph priceText = new Paragraph("Preis: " + price + " Euro");
+
+        String text = specialOffer.isPresent()
+                ? "Sonderangebot verfügbar"
+                : "Kein Sonderangebot";
+
+        Paragraph offerText = new Paragraph(text);
+
+        VerticalLayout card = new VerticalLayout(destinationTitle, priceText, offerText);
+        card.setWidth("350px");
+        card.setPadding(true);
+        card.setSpacing(false);
+        card.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+
+        card.getStyle()
+                .set("border", "1px solid lightgray")
+                .set("border-radius", "10px")
+                .set("margin", "10px")
+                .set("box-shadow", "2px 2px 8px lightgray");
+
+        return card;
+    }
 }
