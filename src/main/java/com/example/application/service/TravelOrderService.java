@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 @Service
 public class TravelOrderService {
 
+    public ArrayList<TravelOrder> findAll() {
+        return new ArrayList<>(orders);
+    }
+
     private ArrayList<TravelOrder> orders;
 
     public TravelOrderService() {

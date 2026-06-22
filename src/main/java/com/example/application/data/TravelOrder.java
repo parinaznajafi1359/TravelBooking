@@ -46,13 +46,6 @@ public class TravelOrder implements Cloneable {
     };
 
     public TravelOrder() {
-        setOrderId();
-        setOrderDate(LocalDate.now());
-        setDestination("Wien - Italien");
-        setTravelClass("Standard");
-        setPrice(199.0);
-        setPersons(1);
-        setInsurance(true);
     }
 
     public TravelOrder(LocalDate orderDate, String destination, String travelClass,
