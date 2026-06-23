@@ -4,6 +4,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -17,18 +25,33 @@ public class TravelOrder implements Cloneable {
     @Column(name = "order_id")
     private Long orderId;
 
+    @NotNull(message = "Order date is required")
+    @PastOrPresent(message = "Order date must be today or in the past")
     @Column(name = "order_date")
     private LocalDate orderDate;
 
+    @NotBlank(message = "Destination is required")
     private String destination;
 
+    @NotBlank(message = "Travel class is required")
+    @Pattern(
+            regexp = "Economy|Standard|Premium|Luxury",
+            message = "Travel class must be Economy, Standard, Premium, or Luxury"
+    )
     @Column(name = "travel_class")
     private String travelClass;
 
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "50.0", message = "The min. price is 50.0 Eur")
+    @DecimalMax(value = "5000.0", message = "The max. price is 5000.0 Eur")
     private Double price;
 
+    @NotNull(message = "Persons is required")
+    @Min(value = 1, message = "At least 1 person is required")
+    @Max(value = 10, message = "Maximum 10 persons are allowed")
     private Integer persons;
 
+    @NotNull(message = "Insurance is required")
     private Boolean insurance;
 
     private static final AtomicLong sequence = new AtomicLong(1000);
@@ -100,6 +123,7 @@ public class TravelOrder implements Cloneable {
                     "Wrong travel class. Must be: " + Arrays.toString(travelClasses)
             );
         }
+
         this.travelClass = travelClass;
     }
 
@@ -153,7 +177,15 @@ public class TravelOrder implements Cloneable {
 
     @Override
     public TravelOrder clone() {
-        return new TravelOrder(orderId, orderDate, destination, travelClass, price, persons, insurance);
+        return new TravelOrder(
+                orderId,
+                orderDate,
+                destination,
+                travelClass,
+                price,
+                persons,
+                insurance
+        );
     }
 
     @Override
