@@ -2,8 +2,9 @@ package com.example.application.views.preislist;
 
 import com.example.application.data.TravelOrder;
 import com.example.application.service.TravelOrderService;
-import com.example.application.views.MainLayout;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Menu;
 import com.vaadin.flow.router.PageTitle;
@@ -12,9 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
 @PageTitle("Preis List")
-@Route(value = "preis-list", layout = MainLayout.class)
+@Route("preis")
 @Menu(order = 2, icon = LineAwesomeIconUrl.FILE)
 public class PreisListView extends VerticalLayout {
+
+    private final Button buttonRemoveAll = new Button("Remove all orders");
+    private final Button buttonAdd10 = new Button("Add 10 orders");
 
     private final Grid<TravelOrder> grid = new Grid<>(TravelOrder.class, true);
     private final TravelOrderService travelOrderService;
@@ -25,17 +29,37 @@ public class PreisListView extends VerticalLayout {
         setSpacing(true);
         setSizeFull();
 
+        buttonRemoveAll.addClickListener(event -> removeAllOrders());
+        buttonAdd10.addClickListener(event -> add10Orders());
+
+        HorizontalLayout buttons = new HorizontalLayout(buttonRemoveAll, buttonAdd10);
+        buttons.setSpacing(true);
+
         grid.setSizeFull();
 
         if (travelOrderService.findAll().isEmpty()) {
-            travelOrderService.fillTestData(20);
+            travelOrderService.fillTestData(10);
         }
 
-        add(grid);
+        add(buttons, grid);
+
+        reload();
+    }
+
+    private void removeAllOrders() {
+        travelOrderService.removeAll();
+        buttonRemoveAll.setEnabled(false);
+        reload();
+    }
+
+    private void add10Orders() {
+        travelOrderService.fillTestData(10);
+        buttonRemoveAll.setEnabled(true);
         reload();
     }
 
     private void reload() {
         grid.setItems(travelOrderService.findAll());
+        buttonRemoveAll.setEnabled(!travelOrderService.findAll().isEmpty());
     }
 }

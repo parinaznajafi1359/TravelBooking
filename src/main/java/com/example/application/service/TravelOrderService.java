@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 @Service
 public class TravelOrderService {
 
+    public void removeAll() {
+        orders.clear();
+    }
+
     public ArrayList<TravelOrder> findAll() {
         return new ArrayList<>(orders);
     }
@@ -54,7 +58,6 @@ public class TravelOrderService {
                 "Luxury"
         };
 
-        orders.clear();
 
         for (int i = 0; i < anz; i++) {
             order = new TravelOrder();
