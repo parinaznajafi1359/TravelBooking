@@ -41,7 +41,7 @@ public class PreisListView extends VerticalLayout {
         setSpacing(true);
         setSizeFull();
 
-        buttonAdd.addClickListener(event -> addOrder());
+        buttonAdd.addClickListener(event -> addEditOrder(null));
         buttonRemoveAll.addClickListener(event -> removeAllOrders());
         buttonAdd10.addClickListener(event -> add10Orders());
         buttonAddWrong.addClickListener(event -> addWrongOrder());
@@ -100,6 +100,10 @@ public class PreisListView extends VerticalLayout {
                 .setSortable(true)
                 .setComparator(order -> Boolean.TRUE.equals(order.getInsurance()));
 
+        grid.addComponentColumn(order -> new Button("Edit order", event -> addEditOrder(order)))
+                .setHeader("Edit")
+                .setSortable(false);
+
         grid.addComponentColumn(order -> new Button("Delete", event -> removeSelected(order.getOrderId())))
                 .setHeader("Delete")
                 .setSortable(false);
@@ -109,9 +113,11 @@ public class PreisListView extends VerticalLayout {
                 .setSortable(false);
     }
 
-    private void addOrder() {
+    private void addEditOrder(TravelOrder existingOrder) {
+        TravelOrder order;
+
         Dialog dialog = new Dialog();
-        dialog.setHeaderTitle("New Travel Order");
+        dialog.setHeaderTitle(existingOrder == null ? "New Travel Order" : "Edit Travel Order");
 
         DatePicker orderDate = new DatePicker("Order date");
 
@@ -150,8 +156,12 @@ public class PreisListView extends VerticalLayout {
         binder.forField(insurance)
                 .bind("insurance");
 
-        TravelOrder order = new TravelOrder();
-        order.setOrderId();
+        if (existingOrder == null) {
+            order = new TravelOrder();
+            order.setOrderId();
+        } else {
+            order = existingOrder;
+        }
 
         binder.setBean(order);
 
@@ -167,10 +177,15 @@ public class PreisListView extends VerticalLayout {
         Button saveButton = new Button("OK", event -> {
             try {
                 if (binder.validate().isOk()) {
-                    travelOrderService.addOrder(order);
+                    if (existingOrder == null) {
+                        travelOrderService.addOrder(order);
+                        Notification.show("Travel order saved");
+                    } else {
+                        Notification.show("Travel order changed");
+                    }
+
                     reload();
                     dialog.close();
-                    Notification.show("Travel order saved");
                 } else {
                     Notification.show("Check your input");
                 }
