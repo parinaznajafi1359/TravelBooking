@@ -13,30 +13,6 @@ import java.util.stream.Collectors;
 @Service
 public class TravelOrderService {
 
-    public void removeAll() {
-        orders.clear();
-    }
-
-    public void addWrongOrder() {
-        TravelOrder order;
-
-        // Wrong price: -20 Euro
-        order = new TravelOrder(
-                LocalDate.now(),
-                "Wien - Dubai",
-                "Luxury",
-                -20.0,
-                1,
-                true
-        );
-
-        orders.add(order);
-    }
-
-    public ArrayList<TravelOrder> findAll() {
-        return new ArrayList<>(orders);
-    }
-
     private ArrayList<TravelOrder> orders;
 
     public TravelOrderService() {
@@ -47,12 +23,33 @@ public class TravelOrderService {
         return orders;
     }
 
+    public ArrayList<TravelOrder> findAll() {
+        return new ArrayList<>(orders);
+    }
+
     public void addOrder(TravelOrder order) {
         orders.add(order);
     }
 
     public void clear() {
         orders.clear();
+    }
+
+    public void removeAll() {
+        orders.clear();
+    }
+
+    public void addWrongOrder() {
+        TravelOrder order = new TravelOrder(
+                LocalDate.now(),
+                "Wien - Dubai",
+                "First Class",
+                -20.0,
+                1,
+                true
+        );
+
+        orders.add(order);
     }
 
     public void fillTestData(int anz) {
@@ -70,16 +67,17 @@ public class TravelOrderService {
 
         String[] travelClasses = {
                 "Economy",
-                "Standard",
-                "Premium",
-                "Luxury"
+                "Premium Economy",
+                "Business Class",
+                "First Class"
         };
 
+        int startId = orders.size() + 1;
 
         for (int i = 0; i < anz; i++) {
             order = new TravelOrder();
 
-            order.setOrderId((long) (i + 1));
+            order.setOrderId((long) (startId + i));
             order.setOrderDate(LocalDate.now().minusDays(faker.number().numberBetween(0, 30)));
             order.setDestination(destinations[faker.number().numberBetween(0, destinations.length)]);
             order.setTravelClass(travelClasses[faker.number().numberBetween(0, travelClasses.length)]);
@@ -89,13 +87,6 @@ public class TravelOrderService {
 
             orders.add(order);
         }
-    }
-
-    @Override
-    public String toString() {
-        return orders.stream()
-                .map(order -> order.toString())
-                .collect(Collectors.joining("\n"));
     }
 
     public void removeTravelOrder(Long orderId) {
@@ -123,5 +114,12 @@ public class TravelOrderService {
         }
 
         throw new TravelOrderException("Order with the ID " + orderId + " not found!");
+    }
+
+    @Override
+    public String toString() {
+        return orders.stream()
+                .map(order -> order.toString())
+                .collect(Collectors.joining("\n"));
     }
 }

@@ -35,8 +35,8 @@ public class TravelOrder implements Cloneable {
 
     @NotBlank(message = "Travel class is required")
     @Pattern(
-            regexp = "Economy|Standard|Premium|Luxury",
-            message = "Travel class must be Economy, Standard, Premium, or Luxury"
+            regexp = "Economy|Premium Economy|Business Class|First Class",
+            message = "Travel class must be Economy, Premium Economy, Business Class, or First Class"
     )
     @Column(name = "travel_class")
     private String travelClass;
@@ -57,7 +57,10 @@ public class TravelOrder implements Cloneable {
     private static final AtomicLong sequence = new AtomicLong(1000);
 
     private static final String[] travelClasses = {
-            "Economy", "Standard", "Premium", "Luxury"
+            "Economy",
+            "Premium Economy",
+            "Business Class",
+            "First Class"
     };
 
     public TravelOrder() {
