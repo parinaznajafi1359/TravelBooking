@@ -1,6 +1,7 @@
 package com.example.application.service;
 
 import com.example.application.data.TravelOrder;
+import com.example.application.data.TravelOrderException;
 import com.github.javafaker.Faker;
 import org.springframework.stereotype.Service;
 
@@ -95,5 +96,32 @@ public class TravelOrderService {
         return orders.stream()
                 .map(order -> order.toString())
                 .collect(Collectors.joining("\n"));
+    }
+
+    public void removeTravelOrder(Long orderId) {
+        if (orderId == null) {
+            throw new TravelOrderException("No Order ID!");
+        }
+
+        boolean removed = orders.removeIf(order -> orderId.equals(order.getOrderId()));
+
+        if (!removed) {
+            throw new TravelOrderException("Order with the ID " + orderId + " not found!");
+        }
+    }
+
+    public void oneMore(Long orderId) {
+        if (orderId == null) {
+            throw new TravelOrderException("No Order ID!");
+        }
+
+        for (TravelOrder order : orders) {
+            if (orderId.equals(order.getOrderId())) {
+                order.setPersons(order.getPersons() + 1);
+                return;
+            }
+        }
+
+        throw new TravelOrderException("Order with the ID " + orderId + " not found!");
     }
 }

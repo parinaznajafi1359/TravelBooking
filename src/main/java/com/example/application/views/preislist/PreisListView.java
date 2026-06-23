@@ -15,6 +15,7 @@ import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
 
+
 @PageTitle("Preis List")
 @Route("preis")
 @Menu(order = 2, icon = LineAwesomeIconUrl.FILE)
@@ -57,6 +58,14 @@ public class PreisListView extends VerticalLayout {
     }
 
     private void setupGridColumns() {
+        grid.addComponentColumn(order -> new Button("Delete", event -> removeSelected(order.getOrderId())))
+                .setHeader("Delete")
+                .setSortable(false);
+
+        grid.addComponentColumn(order -> new Button("One more", event -> oneMore(order.getOrderId())))
+                .setHeader("One more")
+                .setSortable(false);
+
         grid.addColumn(order -> order.getOrderId())
                 .setHeader("Order ID")
                 .setSortable(true);
@@ -115,5 +124,23 @@ public class PreisListView extends VerticalLayout {
     private void reload() {
         grid.setItems(travelOrderService.findAll());
         buttonRemoveAll.setEnabled(!travelOrderService.findAll().isEmpty());
+    }
+
+    private void removeSelected(Long orderId) {
+        try {
+            travelOrderService.removeTravelOrder(orderId);
+            reload();
+        } catch (TravelOrderException e) {
+            Notification.show(e.getMessage(), 4000, Notification.Position.MIDDLE);
+        }
+    }
+
+    private void oneMore(Long orderId) {
+        try {
+            travelOrderService.oneMore(orderId);
+            reload();
+        } catch (TravelOrderException e) {
+            Notification.show(e.getMessage(), 4000, Notification.Position.MIDDLE);
+        }
     }
 }
