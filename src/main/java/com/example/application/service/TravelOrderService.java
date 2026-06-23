@@ -16,6 +16,22 @@ public class TravelOrderService {
         orders.clear();
     }
 
+    public void addWrongOrder() {
+        TravelOrder order;
+
+        // Wrong price: -20 Euro
+        order = new TravelOrder(
+                LocalDate.now(),
+                "Wien - Dubai",
+                "Luxury",
+                -20.0,
+                1,
+                true
+        );
+
+        orders.add(order);
+    }
+
     public ArrayList<TravelOrder> findAll() {
         return new ArrayList<>(orders);
     }

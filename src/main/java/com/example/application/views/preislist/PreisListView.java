@@ -11,11 +11,15 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.lineawesome.LineAwesomeIconUrl;
+import com.example.application.data.TravelOrderException;
+import com.vaadin.flow.component.notification.Notification;
 
 @PageTitle("Preis List")
 @Route("preis")
 @Menu(order = 2, icon = LineAwesomeIconUrl.FILE)
 public class PreisListView extends VerticalLayout {
+
+    private final Button buttonAddWrong = new Button("Add WRONG order");
 
     private final Button buttonRemoveAll = new Button("Remove all orders");
     private final Button buttonAdd10 = new Button("Add 10 orders");
@@ -29,10 +33,12 @@ public class PreisListView extends VerticalLayout {
         setSpacing(true);
         setSizeFull();
 
+        buttonAddWrong.addClickListener(event -> addWrongOrder());
+
         buttonRemoveAll.addClickListener(event -> removeAllOrders());
         buttonAdd10.addClickListener(event -> add10Orders());
 
-        HorizontalLayout buttons = new HorizontalLayout(buttonRemoveAll, buttonAdd10);
+        HorizontalLayout buttons = new HorizontalLayout(buttonRemoveAll, buttonAdd10, buttonAddWrong);
         buttons.setSpacing(true);
 
         grid.setSizeFull();
@@ -44,6 +50,15 @@ public class PreisListView extends VerticalLayout {
         add(buttons, grid);
 
         reload();
+    }
+
+    private void addWrongOrder() {
+        try {
+            travelOrderService.addWrongOrder();
+            reload();
+        } catch (TravelOrderException e) {
+            Notification.show(e.getMessage(), 4000, Notification.Position.MIDDLE);
+        }
     }
 
     private void removeAllOrders() {
